@@ -9,7 +9,7 @@ Then he reads a brief that is **shaped wrong**. It opens by telling him the make
 registration of the car he is standing next to, and buries the thing that matters. He
 corrects it once, in one sentence. Every brief after that is different.
 
-That correction is the whole point. It is stored in [Athena](https://github.com/Prescott-Data/athena),
+That correction is the whole point. It is stored in [Athena](https://athena.developers.prescottdata.io/),
 it survives the process, and the agent applies it to questions it has never seen.
 
 ```
@@ -245,8 +245,11 @@ AGENT_ID="run-$(date +%s)" uvicorn app:app --reload --port 8000
 
 ## Links
 
-- **Athena** — the memory OS · https://github.com/Prescott-Data/athena
-- **JarvisCore** — the agent framework · https://github.com/Prescott-Data/jarviscore-framework
-- **Office Hours — join us on Discord** · https://discord.gg/CUb2FbasA
+| | Docs | Source |
+|---|---|---|
+| **Athena** — the memory OS | https://athena.developers.prescottdata.io/ | https://github.com/Prescott-Data/athena |
+| **JarvisCore** — the agent framework | https://jarviscore.developers.prescottdata.io/ | https://github.com/Prescott-Data/jarviscore-framework |
+
+**Office Hours — join us on Discord:** https://discord.gg/CUb2FbasA
 
 Built live on 3 September 2026. Questions and experiments welcome in the Athena channel.
