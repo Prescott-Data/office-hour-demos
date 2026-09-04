@@ -1,0 +1,102 @@
+[
+  {
+    "label": "KCH 812P · Feb · overheating",
+    "job_ref": "JOB-1461",
+    "reg": "KCH 812P",
+    "date": "11 February 2026",
+    "complaint": "Temperature gauge climbing in traffic, coolant smell. Nissan Note 2017",
+    "work_done": "Thermostat replaced, coolant drained and refilled, system pressure tested",
+    "technician": "Kamau",
+    "left_undone": "Both radiator hoses are soft and perished. Quoted, customer deferred to next visit"
+  },
+  {
+    "label": "KCH 812P · May · aircon",
+    "job_ref": "JOB-1502",
+    "reg": "KCH 812P",
+    "date": "23 May 2026",
+    "complaint": "Air conditioning blowing warm",
+    "work_done": "System evacuated and regassed, cabin filter replaced",
+    "technician": "Njeri",
+    "left_undone": "Nothing outstanding on the aircon"
+  },
+  {
+    "label": "KBX 245M · Jan · suspension",
+    "job_ref": "JOB-1388",
+    "reg": "KBX 245M",
+    "date": "16 January 2026",
+    "complaint": "Knocking from the front over bumps. Toyota Probox 2014",
+    "work_done": "Front lower arm bushes replaced both sides, sway bar links replaced",
+    "technician": "Otieno",
+    "left_undone": "Rear shocks are leaking. Customer declined on cost, advised not to leave past 10,000 km"
+  },
+  {
+    "label": "KBX 245M · Jul · alignment",
+    "job_ref": "JOB-1553",
+    "reg": "KBX 245M",
+    "date": "2 July 2026",
+    "complaint": "Pulling to the left after hitting a pothole on Mombasa Road",
+    "work_done": "Four wheel alignment, front tyres rotated",
+    "technician": "Otieno",
+    "left_undone": "Nothing outstanding from this visit"
+  },
+  {
+    "label": "KCA 118H · Mar · clutch",
+    "job_ref": "JOB-1424",
+    "reg": "KCA 118H",
+    "date": "9 March 2026",
+    "complaint": "Clutch slipping under load going uphill. Isuzu D-Max 2015",
+    "work_done": "Clutch kit replaced, flywheel skimmed, gearbox refitted",
+    "technician": "Kamau",
+    "left_undone": "Rear main seal weeping, noticed with the gearbox out. Not leaking enough to justify the labour yet, monitor it"
+  },
+  {
+    "label": "KCA 118H · Jun · front brakes",
+    "job_ref": "JOB-1531",
+    "reg": "KCA 118H",
+    "date": "18 June 2026",
+    "complaint": "Brake pedal travelling further than usual",
+    "work_done": "Front pads replaced, calipers cleaned and greased, fluid topped up",
+    "technician": "Njeri",
+    "left_undone": "Nothing outstanding on the brakes"
+  },
+  {
+    "label": "KDD 556R · Jul · electrical, unresolved",
+    "job_ref": "JOB-1560",
+    "reg": "KDD 556R",
+    "date": "27 July 2026",
+    "complaint": "Dashboard lights flicker and the car occasionally will not crank. Subaru Forester 2016",
+    "work_done": "Battery and alternator tested good, earth straps cleaned, fault could not be reproduced on the day",
+    "technician": "Otieno",
+    "left_undone": "Fault not found. Customer to return the moment it happens again, ideally without switching the car off"
+  },
+  {
+    "label": "KDG 907T · Aug · service, clean",
+    "job_ref": "JOB-1587",
+    "reg": "KDG 907T",
+    "date": "14 August 2026",
+    "complaint": "Booked in for the 40,000 km service. Mazda Demio 2018",
+    "work_done": "Engine oil and filter, air filter, brake inspection, tyre rotation",
+    "technician": "Njeri",
+    "left_undone": "Nothing outstanding. Next service due at 50,000 km"
+  },
+  {
+    "label": "KBS 330Q · Apr · timing belt",
+    "job_ref": "JOB-1470",
+    "reg": "KBS 330Q",
+    "date": "3 April 2026",
+    "complaint": "Booked in for the 200,000 km service. Toyota Hiace 2013, runs the Ngong route daily",
+    "work_done": "Timing belt, water pump, tensioner and idlers replaced. Full service alongside",
+    "technician": "Kamau",
+    "left_undone": "Nothing outstanding. Next timing belt at 300,000 km"
+  },
+  {
+    "label": "KBS 330Q · Aug · noise",
+    "job_ref": "JOB-1579",
+    "reg": "KBS 330Q",
+    "date": "8 August 2026",
+    "complaint": "Whining noise from the front of the engine, rises with revs",
+    "work_done": "Auxiliary belt and tensioner replaced",
+    "technician": "Otieno",
+    "left_undone": "Alternator bearing has slight play. Not noisy yet, flagged for the next visit"
+  }
+]

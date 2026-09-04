@@ -1,0 +1,32 @@
+[
+  {
+    "label": "March · brakes",
+    "job_ref": "JOB-1042",
+    "reg": "KDA 421X",
+    "date": "4 March 2026",
+    "complaint": "Judders when braking, grinding sound from the front. Toyota Vitz 2016",
+    "work_done": "Front discs and pads replaced, both sides",
+    "technician": "Kamau",
+    "left_undone": "Customer declined the rear pads. Roughly 20% left, advised within six months"
+  },
+  {
+    "label": "April · major service",
+    "job_ref": "JOB-1198",
+    "reg": "KDA 421X",
+    "date": "19 April 2026",
+    "complaint": "Booked in for the 60,000 km major service",
+    "work_done": "Engine oil and filter, air filter, cabin filter, spark plugs, brake fluid flushed",
+    "technician": "Njeri",
+    "left_undone": "Nothing outstanding. Next service due at 70,000 km"
+  },
+  {
+    "label": "June · squealing",
+    "job_ref": "JOB-1319",
+    "reg": "KDA 421X",
+    "date": "12 June 2026",
+    "complaint": "Squealing from the front when braking, worse first thing in the morning",
+    "work_done": "Cleaned and de-glazed front pads, lubricated slider pins",
+    "technician": "Kamau",
+    "left_undone": "Rear pads still outstanding from March, now roughly 15% left"
+  }
+]

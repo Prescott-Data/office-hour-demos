@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mordern Garage</title>
+<style>
+  /* Prescott Data OSS palette — tokens lifted from developers.prescottdata.io */
+  :root {
+    --ground: #021006; --panel: #041f0b; --raised: #062b10;
+    --line: rgba(200,255,0,.14); --line-2: rgba(200,255,0,.07);
+    --ink: #f5f5f7; --dim: rgba(248,255,204,.56); --faint: rgba(248,255,204,.34);
+    --accent: #c8ff00; --bad: #ff5733; --cyan: #18f6c1;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ground); color: var(--ink); height: 100vh;
+         display: flex; flex-direction: column; overflow: hidden;
+         font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+
+  /* ── masthead ─────────────────────────────────────────── */
+  header { display: flex; align-items: center; gap: 16px; padding: 13px 24px;
+           background: var(--panel); border-bottom: 1px solid var(--line); flex: none; }
+  .mark { display: flex; align-items: baseline; gap: 9px; }
+  .mark b { font: 800 19px/1 ui-sans-serif; letter-spacing: -.03em; }
+  .mark b i { font-style: normal; color: var(--accent); }
+  .mark span { font: 600 10px/1 ui-sans-serif; letter-spacing: .22em;
+               text-transform: uppercase; color: var(--faint); }
+  .who { margin-left: auto; display: flex; align-items: center; gap: 10px;
+         font-size: 12.5px; color: var(--dim); }
+  .who .av { width: 27px; height: 27px; border-radius: 50%; display: grid;
+             place-items: center; background: rgba(200,255,0,.14); color: var(--accent);
+             font: 700 11px/1 ui-sans-serif; letter-spacing: .04em; }
+  .who b { color: var(--ink); font-weight: 600; }
+  .busy { color: var(--accent); font-size: 12.5px; }
+
+  /* ── layout ───────────────────────────────────────────── */
+  .wrap { flex: 1; display: grid; grid-template-columns: 350px minmax(0,1fr) 390px;
+          gap: 14px; padding: 14px 18px 16px; min-height: 0; }
+  @media (max-width: 1500px) { .wrap { grid-template-columns: 330px minmax(0,1fr); }
+                               .col.side { display: none; } }
+  @media (max-width: 1040px) { .wrap { grid-template-columns: 1fr; overflow: auto; } }
+  .col { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+           display: flex; flex-direction: column; min-height: 0; }
+  .panel > .head { padding: 13px 16px 0; flex: none; }
+  .panel > .body { padding: 0 16px 15px; overflow: auto; }
+  h2 { font: 700 10.5px/1 ui-sans-serif; text-transform: uppercase; letter-spacing: .14em;
+       color: var(--faint); margin: 0 0 3px; }
+  h2 em { font-style: normal; color: var(--cyan); letter-spacing: .05em; }
+  .sub { font-size: 12.5px; color: var(--dim); margin-bottom: 4px; }
+
+  /* ── job card form ────────────────────────────────────── */
+  label { display: block; font-size: 11.5px; color: var(--dim); margin: 11px 0 5px; }
+  input, textarea { width: 100%; background: var(--ground); color: var(--ink);
+    border: 1px solid var(--line); border-radius: 7px; padding: 9px 11px;
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(200,255,0,.08); }
+  textarea { resize: vertical; min-height: 52px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  button { background: var(--accent); color: #041f0b; border: 0; border-radius: 7px;
+    padding: 10px 16px; font: 700 13.5px ui-sans-serif; cursor: pointer; }
+  button:disabled { opacity: .4; cursor: default; }
+  button.ghost { background: transparent; color: var(--dim); border: 1px solid var(--line);
+    font: 600 11.5px ui-sans-serif; padding: 6px 10px; }
+  button.ghost:hover { color: var(--ink); border-color: var(--accent); }
+  #file { width: 100%; margin-top: 13px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+
+  /* ── cards on file ────────────────────────────────────── */
+  .card-row { display: grid; grid-template-columns: 88px 1fr; gap: 10px; padding: 8px 0;
+              border-bottom: 1px solid var(--line-2); font-size: 12.5px; }
+  .card-row:last-child { border-bottom: 0; }
+  .card-row b { font: 600 12px ui-monospace, monospace; }
+  .card-row .p { color: var(--cyan); font: 11.5px ui-monospace, monospace; }
+  .card-row .d { color: var(--dim); }
+  .card-row .u { color: var(--accent); font-size: 11.5px; margin-top: 2px; }
+  .none { color: var(--faint); font-size: 12.5px; padding: 10px 0; }
+
+  /* ── chat ─────────────────────────────────────────────── */
+  .chat { flex: 1; overflow: auto; padding: 14px 18px; display: flex;
+          flex-direction: column; gap: 14px; }
+  .msg { max-width: 78%; }
+  .msg.me { align-self: flex-end; }
+  .bub { border-radius: 12px; padding: 11px 14px; font-size: 14.5px; line-height: 1.55; }
+  .me .bub { background: rgba(200,255,0,.11); border: 1px solid rgba(200,255,0,.22);
+             border-bottom-right-radius: 4px; }
+  .them .bub { background: var(--raised); border: 1px solid var(--line);
+               border-bottom-left-radius: 4px; }
+  .me.fix .bub { background: rgba(24,246,193,.1); border-color: rgba(24,246,193,.34); }
+  .tag { font: 700 9.5px ui-sans-serif; letter-spacing: .14em; text-transform: uppercase;
+         color: var(--cyan); margin-bottom: 5px; }
+  .me .tag { color: var(--faint); text-align: right; }
+  .me.fix .tag { color: var(--cyan); }
+  /* the first sentence is the whole demo, so it gets to be the loud part */
+  .lead { font-weight: 650; }
+  .rest { color: var(--dim); }
+  .foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+          margin-top: 9px; padding-top: 8px; border-top: 1px solid var(--line-2);
+          font: 11.5px ui-sans-serif; color: var(--faint); }
+  .foot .drew { color: var(--cyan); font-family: ui-monospace, monospace; }
+  .followed { margin-top: 8px; padding: 8px 10px; border-left: 2px solid var(--accent);
+              background: rgba(200,255,0,.06); border-radius: 0 6px 6px 0;
+              font-size: 12.5px; color: var(--accent); }
+  .followed b { display: block; font: 700 9.5px ui-sans-serif; letter-spacing: .14em;
+                text-transform: uppercase; margin-bottom: 4px; }
+  .thinking { color: var(--accent); font-size: 13px; }
+
+  /* ── composer ─────────────────────────────────────────── */
+  .composer { flex: none; border-top: 1px solid var(--line); padding: 11px 16px 13px;
+              background: var(--panel); }
+  .composer textarea { min-height: 46px; max-height: 120px; font-family: inherit;
+                       font-size: 14px; }
+  .send { display: flex; gap: 8px; margin-top: 9px; align-items: center; }
+  #teach { background: var(--cyan); }
+  .send .hint { margin-left: auto; font-size: 11.5px; color: var(--faint); }
+
+  /* ── trace ────────────────────────────────────────────── */
+  .tstep { display: grid; grid-template-columns: 11px 1fr; gap: 10px; padding: 7px 0;
+           border-bottom: 1px solid var(--line-2); }
+  .tstep:last-child { border-bottom: 0; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; }
+  .dot.on { background: var(--accent); } .dot.hit { background: var(--cyan); }
+  .dot.miss { background: var(--faint); } .dot.off { background: rgba(248,255,204,.2); }
+  .dot.info { background: rgba(248,255,204,.3); }
+  .tname { font-size: 12.5px; font-weight: 650; }
+  .tdetail { font-size: 11.5px; color: var(--dim); }
+  .tdetail.warm { color: var(--cyan); }
+  .tcard { background: var(--raised); border-left: 2px solid var(--cyan);
+           border-radius: 0 5px 5px 0; padding: 6px 9px; margin-top: 5px;
+           font: 11.5px/1.45 ui-monospace, monospace; color: var(--dim);
+           display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+           overflow: hidden; }
+  .tcard.rule { border-left-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="mark"><b>MORDERN<i>/</i>GARAGE</b><span>Service desk</span></div>
+  <span id="busy" class="busy"></span>
+  <div class="who">
+    <span>Signed in as <b id="who">—</b></span>
+    <span class="av" id="initials">—</span>
+    <button class="ghost" onclick="reset()">Start fresh</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="col">
+    <div class="panel" style="flex:none">
+      <div class="head">
+        <h2>Vehicle in</h2>
+        <div class="sub">The job card, filled in when the work is done.</div>
+      </div>
+      <div class="body">
+        <div class="two">
+          <div><label for="ref">Job reference</label><input id="ref" placeholder="JOB-1042"></div>
+          <div><label for="reg">Registration</label><input id="reg" placeholder="KDA 421X"></div>
+        </div>
+        <label for="date">Date in</label><input id="date" placeholder="4 March 2026">
+        <label for="complaint">What the customer said</label>
+        <textarea id="complaint" placeholder="Judders when braking, grinding from the front…"></textarea>
+        <label for="work">Work done</label>
+        <textarea id="work" placeholder="Front discs and pads replaced, both sides"></textarea>
+        <div class="two">
+          <div><label for="tech">Technician</label><input id="tech" placeholder="Kamau"></div>
+          <div><label for="undone">Left undone</label><input id="undone" placeholder="Rear pads declined"></div>
+        </div>
+        <button id="file" onclick="fileJob()">Upload car info</button>
+        <div class="chips" id="examples"></div>
+      </div>
+    </div>
+
+    <div class="panel" style="min-height:0">
+      <div class="head"><h2>Job cards on file <em id="ncards"></em></h2></div>
+      <div class="body" id="cards"></div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="panel" style="flex:1; min-height:0">
+      <div class="head"><h2>Ask the advisor</h2></div>
+      <div class="chat" id="chat"></div>
+      <div class="composer">
+        <textarea id="msg" placeholder="What do you know about KDA 421X?"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+        <div class="send">
+          <button id="go" onclick="send()">Ask</button>
+          <button id="teach" onclick="teach()">Teach it</button>
+          <span class="hint">Enter to ask · Teach it to correct the brief</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="col side">
+    <div class="panel" style="flex:1; min-height:0">
+      <div class="head"><h2>What it looked up <em id="trace-of"></em></h2></div>
+      <div class="body" id="trace"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let S = { examples: [], cards: [], chat: [], mechanic: '' };
+let busy = false, live = null;
+
+const $ = id => document.getElementById(id);
+const esc = t => (t || '').replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+
+async function load() { S = await (await fetch('/api/state')).json(); render(); }
+
+function fill(i) {
+  const e = S.examples[i];
+  ref.value = e.job_ref; reg.value = e.reg; date.value = e.date;
+  complaint.value = e.complaint; work.value = e.work_done;
+  tech.value = e.technician; undone.value = e.left_undone;
+}
+function clearForm() {
+  [ref, reg, date, complaint, work, tech, undone].forEach(el => el.value = '');
+}
+
+function splitBrief(b) {
+  const m = (b || '').match(/^([\s\S]*?[.!?])(\s+[\s\S]*)?$/);
+  return m ? [m[1], (m[2] || '').trim()] : [b || '', ''];
+}
+
+function renderChat() {
+  const box = $('chat');
+  let html = S.chat.map(m => {
+    if (m.role === 'mechanic')
+      return `<div class="msg me ${m.kind === 'correction' ? 'fix' : ''}">
+        <div class="tag">${m.kind === 'correction' ? 'correction' : S.mechanic}</div>
+        <div class="bub">${esc(m.text)}</div></div>`;
+    if (m.kind === 'ack')
+      return `<div class="msg them"><div class="tag">advisor</div>
+        <div class="bub" style="color:var(--cyan)">${esc(m.text)}</div></div>`;
+    const [lead, rest] = splitBrief(m.brief);
+    return `<div class="msg them"><div class="tag">advisor</div><div class="bub">
+      <span class="lead">${esc(lead)}</span> <span class="rest">${esc(rest)}</span>
+      <div class="foot">
+        ${m.related_visits && m.related_visits.length ? `<span class="drew">${m.related_visits.join(' · ')}</span>` : ''}
+        <span>${m.cards_seen} card${m.cards_seen === 1 ? '' : 's'} read</span>
+        <span>${(m.tokens || 0).toLocaleString()} tokens · ${m.seconds}s</span>
+      </div></div></div>`;
+  }).join('');
+  if (live) html += `<div class="msg them"><div class="tag">advisor</div>
+    <div class="bub thinking">reading the job cards…</div></div>`;
+  box.innerHTML = html || '<div class="none">Ask about a vehicle to get a brief.</div>';
+  box.scrollTop = box.scrollHeight;
+}
+
+function renderTrace() {
+  const t = live ? live.trace
+    : (S.chat.filter(m => m.kind === 'brief').slice(-1)[0] || {}).trace || [];
+  $('trace-of').textContent = live ? '· live' : '';
+  $('trace').innerHTML = t.map(s => `
+    <div class="tstep"><div class="dot ${s.state}"></div><div>
+      <div class="tname">${esc(s.step)}</div>
+      <div class="tdetail ${s.state === 'hit' ? 'warm' : ''}">${esc(s.detail)}</div>
+      ${(s.lines || []).map(l => `<div class="tcard ${/^Guidance\./.test(l) ? 'rule' : ''}">${esc(l)}</div>`).join('')}
+    </div></div>`).join('') || '<div class="none">Nothing looked up yet.</div>';
+}
+
+function render() {
+  $('who').textContent = S.mechanic;
+  $('initials').textContent = (S.mechanic || '?').slice(0, 2).toUpperCase();
+  $('examples').innerHTML = S.examples.map((e, i) =>
+    `<button class="ghost" onclick="fill(${i})">${e.label}</button>`).join('');
+  $('ncards').textContent = S.cards.length ? '· ' + S.cards.length : '';
+  $('cards').innerHTML = S.cards.length ? S.cards.map(c => `
+    <div class="card-row">
+      <div><b>${esc(c.job_ref)}</b><div class="p">${esc(c.reg)}</div></div>
+      <div><div class="d">${esc(c.date || '')} — ${esc(c.complaint || '')}</div>
+        ${c.left_undone ? `<div class="u">left: ${esc(c.left_undone)}</div>` : ''}</div>
+    </div>`).join('') : '<div class="none">No cards filed yet.</div>';
+  $('go').disabled = busy; $('teach').disabled = busy;
+  renderChat(); renderTrace();
+}
+
+async function fileJob() {
+  const body = { job_ref: ref.value.trim(), reg: reg.value.trim(), date: date.value.trim(),
+    complaint: complaint.value.trim(), work_done: work.value.trim(),
+    technician: tech.value.trim(), left_undone: undone.value.trim() };
+  if (!body.job_ref || !body.reg) { alert('A job reference and a registration.'); return; }
+  const res = await fetch('/api/job', { method: 'POST',
+    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) { alert((await res.json()).error); return; }
+  clearForm(); await load();
+}
+
+async function send() {
+  if (busy) return;
+  const text = $('msg').value.trim();
+  if (!text) return;
+  busy = true; live = { trace: [] }; $('msg').value = '';
+  S.chat.push({ role: 'mechanic', kind: 'question', text });
+  $('busy').textContent = 'reading the job cards…'; render();
+  try {
+    const res = await fetch('/api/ask', { method: 'POST',
+      headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+    if (!res.ok) { alert((await res.json()).error); return; }
+    const reader = res.body.getReader(), dec = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const frames = buf.split('\n\n'); buf = frames.pop();
+      for (const f of frames) {
+        const kind = (f.match(/^event: (.+)$/m) || [])[1];
+        const data = (f.match(/^data: ([\s\S]+)$/m) || [])[1];
+        if (!kind || !data) continue;
+        const p = JSON.parse(data);
+        if (kind === 'step') { live.trace.push(p); renderTrace(); }
+        else if (kind === 'failed') alert(p.error);
+      }
+    }
+  } finally {
+    busy = false; live = null; $('busy').textContent = ''; await load();
+  }
+}
+
+async function teach() {
+  if (busy) return;
+  const text = $('msg').value.trim();
+  if (!text) { alert('Type the correction, then Teach it.'); return; }
+  const res = await fetch('/api/correct', { method: 'POST',
+    headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text }) });
+  if (!res.ok) { alert((await res.json()).error); return; }
+  $('msg').value = ''; await load();
+}
+
+async function reset() {
+  await fetch('/api/reset', { method: 'POST' }); clearForm(); await load();
+}
+
+load();
+</script>
+</body>
+</html>
