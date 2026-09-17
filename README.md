@@ -72,5 +72,6 @@ Add a row to the table above in the same commit.
 |---|---|---|
 | **Athena**, the memory OS for agents | https://athena.developers.prescottdata.io/ | https://github.com/Prescott-Data/athena |
 | **JarvisCore**, the agent framework | https://jarviscore.developers.prescottdata.io/ | https://github.com/Prescott-Data/jarviscore-framework |
+| **Odin**, the graph navigation engine | https://odin.developers.prescottdata.io/ | https://github.com/Prescott-Data/Odin-1 |
 
 **Join Office Hours on Discord:** https://discord.gg/CUb2FbasA
