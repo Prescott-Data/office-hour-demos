@@ -1,0 +1,7 @@
+# secrets: every episode ships a .env.example, the real .env never leaves your machine
+.env
+
+venv/
+.venv/
+__pycache__/
+*.pyc
