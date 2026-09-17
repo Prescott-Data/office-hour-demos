@@ -18,6 +18,7 @@ so you can clone the repo and open any one of them without reading the others.
 | | Episode | What gets built | Stack |
 |---|---|---|---|
 | **EP 02** | [**Agents That Learn From Their Mistakes**](ep02-garage-service-desk/) · 3 September 2026 | A garage service desk. The agent briefs a mechanic on a vehicle's history, gets corrected once, and every brief after that is shaped differently | [JarvisCore](https://jarviscore.developers.prescottdata.io/), [Athena](https://athena.developers.prescottdata.io/), FastAPI |
+| **EP 03** | [**Give Your AI Agent a Compass**](ep03-odin-evidence-compass/) · 17 September 2026 | A claims investigator chooses what to inspect while Odin navigates and ranks the connected evidence | [Odin](https://github.com/Prescott-Data/odin), FastAPI, React |
 
 ---
 
