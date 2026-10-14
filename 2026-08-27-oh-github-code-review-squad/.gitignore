@@ -1,0 +1,16 @@
+# secrets: .env.example is the template, .env is yours and never leaves your machine
+.env
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# written at runtime by the agents and by JarvisCore
+logs/
+traces/
+output/
+blob_storage/
+StepOutputs/
+hitl_inbox/
+.run/
