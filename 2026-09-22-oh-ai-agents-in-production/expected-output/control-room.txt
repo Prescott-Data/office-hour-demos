@@ -1,0 +1,33 @@
+# Control room known-good run (API-driven). Each block: run, approve, outputs.
+
+## 1. Normal request
+run {'workflow': 'cr-acme-1790004585'}
+  approve -> {'approved': 'cr-acme-1790004585'}
+  approve_release {"approved": "HITLDecision.approved", "request_id": "hitl-20260921-182956-d81941cb"}
+  execute {"applied": true, "released_by": "worker-a"}
+  summarize {"provider": "azure", "mode": "fake", "elapsed_s": 0.0, "answer": "Release of checkout-service is approved and applied; config verified."}
+  budget: {'max_tokens_per_epoch': 240000, 'used_tokens': 62, 'cost_usd': 0.00032, 'call_count': 1, 'epoch_count': 1}
+  ledger: ['dag_published', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed']
+
+## 2. Worker lost mid-step (freeze, takeover, resume)
+run {'workflow': 'cr-acme-1790004603'}
+  FREEZE -> {'frozen': 'worker-b', 'step': 'fetch_config'}
+  approve -> {'approved': 'cr-acme-1790004603'}
+  resume -> {'resumed': 'worker-b'}
+  approve_release {"approved": "HITLDecision.approved", "request_id": "hitl-20260921-183021-d41742e9"}
+  execute {"applied": true, "released_by": "worker-a"}
+  summarize {"provider": "azure", "mode": "fake", "elapsed_s": 0.0, "answer": "Release of checkout-service is approved and applied; config verified."}
+  budget: {'max_tokens_per_epoch': 240000, 'used_tokens': 62, 'cost_usd': 0.00032, 'call_count': 1, 'epoch_count': 1}
+  ledger: ['step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_claim_expired', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed']
+
+## 3. Provider at capacity (fallback)
+run {'workflow': 'cr-acme-1790004632'}
+  approve -> {'approved': 'cr-acme-1790004632'}
+  approve_release {"approved": "HITLDecision.approved", "request_id": "hitl-20260921-183043-45ffcf40"}
+  execute {"applied": true, "released_by": "worker-b"}
+  summarize {"provider": "vllm", "mode": "fake", "elapsed_s": 1.5, "answer": "Release of checkout-service applied (served by the fallback provider)."}
+  budget: {'max_tokens_per_epoch': 240000, 'used_tokens': 62, 'cost_usd': 0.0, 'call_count': 1, 'epoch_count': 1}
+  ledger: ['dag_published', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed', 'step_claimed', 'step_completed']
+
+## 4. Off-allowlist host
+{'blocked': True, 'error': 'HostNotAllowed', 'message': "'demo-crm' credentials may not be sent to 'example.com'. 'demo-crm' is called on: 127.0.0.1. Use the host that belongs to the provider whose credential this is, or run this call against the provider that actually owns 'e"}

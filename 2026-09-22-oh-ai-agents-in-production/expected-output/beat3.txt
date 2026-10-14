@@ -1,0 +1,13 @@
+
+provider order: ['azure', 'vllm']
+azure  -> 429 'Please retry after 3600 seconds'  (quota window spent)
+vllm   -> healthy
+
+client.generate('say hi')  # a naive client would now sleep for an hour
+
+  llm.py > Provider azure quota exhausted (retry-after 3600s > 300s cap) — failing fast.
+
+answered by: vllm   content: 'Fallback provider answered.'
+elapsed: 2.3s   (not 3600s)
+requests seen -> azure: 3   vllm: 1
+
