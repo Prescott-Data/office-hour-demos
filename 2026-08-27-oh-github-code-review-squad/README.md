@@ -14,8 +14,7 @@ Three agents, one repo, two external services, built live from an empty file:
 GitHub and Gmail are both reached through **Nexus**. The agents never see a token: after a
 run you can grep everything they wrote for `token|secret|bearer` and get nothing back.
 
-**Slides:** [`slides/slides.pdf`](slides/slides.pdf), or open `slides/index.html` in a
-browser (arrow keys to move, `O` for the outline).
+**Slides:** [`building-a-github-code-review-squad.pdf`](building-a-github-code-review-squad.pdf)
 
 > The `src/payments.py` the agents push is generated, deliberately bad, and exists to be
 > reviewed. Don't copy it anywhere.
@@ -160,4 +159,4 @@ looks nothing like a scope problem. `email_report.py` passes the two Gmail scope
 | `providers.py` | Lists the gateway's providers directly |
 | `main.py`, `dashboard/app.py` | The dashboard backend and front end |
 | `atoms/github/` | The three GitHub write atoms |
-| `slides/` | The deck: `content.mjs` is the text, `node build.mjs` rebuilds `index.html` |
+| `building-a-github-code-review-squad.pdf` | The slides |
