@@ -17,6 +17,7 @@ so you can clone the repo and open any one of them without reading the others.
 
 | | Episode | What gets built | Stack |
 |---|---|---|---|
+| **OH** | [**Building a GitHub Code Review Squad**](2026-08-27-oh-github-code-review-squad/) · 27 August 2026 | Three agents that write code, push it, review it, remember what they found, and email the report. Every call goes through Nexus; no agent holds a token | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Nexus, GitHub, Gmail |
 | **EP 02** | [**Agents That Learn From Their Mistakes**](ep02-garage-service-desk/) · 3 September 2026 | A garage service desk. The agent briefs a mechanic on a vehicle's history, gets corrected once, and every brief after that is shaped differently | [JarvisCore](https://jarviscore.developers.prescottdata.io/), [Athena](https://athena.developers.prescottdata.io/), FastAPI |
 | **EP 03** | [**Give Your AI Agent a Compass**](ep03-odin-evidence-compass/) · 17 September 2026 | A claims investigator chooses what to inspect while Odin navigates and ranks the connected evidence | [Odin](https://github.com/Prescott-Data/odin), FastAPI, React |
 
@@ -42,9 +43,10 @@ Most episodes need:
 
 ## Adding an episode
 
-One folder per session, named `epNN-short-description`, with the code as it stood when the
-session ended. Tidying for readability is fine. Rewriting it into something that was not
-shown live is not, because the value of this repo is that it matches the recording.
+One folder per session, named `epNN-short-description`, or `YYYY-MM-DD-oh-short-description`
+when the session has no episode number, with the code as it stood when the session ended.
+Tidying for readability is fine. Rewriting it into something that was not shown live is not,
+because the value of this repo is that it matches the recording.
 
 Every episode folder carries:
 
