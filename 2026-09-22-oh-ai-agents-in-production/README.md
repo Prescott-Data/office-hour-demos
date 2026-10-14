@@ -7,7 +7,7 @@ discussion, not a build-along: what agents ask of a platform, the reference arch
 we run them on, the setup order and configuration that matter, and what went wrong on the
 way. It closed with a live demo of one request travelling through a production control room.
 
-**Slides:** [`ai-agents-in-production.pdf`](ai-agents-in-production.pdf). The deck is the main
+**Slides:** [`slides/ai-agents-in-production.pdf`](slides/ai-agents-in-production.pdf). The deck is the main
 artifact of this session; the code below is the demo and three short scripts that each prove
 one claim from it.
 
@@ -115,4 +115,4 @@ Known-good outputs for beats 1 and 3 are in `expected-output/`.
 | `control_room/ui.html` | The dashboard |
 | `beat1_lease_recovery.py`, `beat2_nexus_contract.py`, `beat3_fake_provider.py`, `beat3_failover.py` | The standalone proofs |
 | `expected-output/` | Known-good output from the day |
-| `ai-agents-in-production.pdf` | The slides |
+| `slides/ai-agents-in-production.pdf` | The slides |
