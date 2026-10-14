@@ -1,0 +1,14 @@
+# secrets: .env.example is the template, .env is yours and never leaves your machine
+.env
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# written at runtime by the control room, its workers and the beats
+control_room/.run/
+blob_storage/
+control_room/blob_storage/
+hitl_inbox/
+agent_state.json

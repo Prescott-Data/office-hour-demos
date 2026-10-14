@@ -1,0 +1,41 @@
+
+workflow demo-lease-1789991312: fetch -> transform -> publish
+
+worker-a     claimed 'fetch' as worker-a:b6bf40 (lease 6s)
+worker-a     committed 'fetch'
+worker-a     claimed 'transform' as worker-a:0dcdd1 (lease 6s)
+orchestrator FREEZE worker-a (SIGSTOP) mid-step: silent, but it still thinks it owns 'transform'
+t+00s        lock TTL    6s   transform: in_progress owner=worker-a  
+t+01s        lock TTL    5s   transform: in_progress owner=worker-a  
+t+02s        lock TTL    4s   transform: in_progress owner=worker-a  
+t+03s        lock TTL    3s   transform: in_progress owner=worker-a  
+t+04s        lock TTL    2s   transform: in_progress owner=worker-a  
+t+05s        lock TTL    1s   transform: in_progress owner=worker-a  
+t+06s        lock TTL  gone   transform: in_progress owner=worker-a  
+worker-b     recovered expired claim on 'transform'
+worker-b     claimed 'transform' as worker-b:1e84dc (lease 6s)
+t+07s        lock TTL    5s   transform: in_progress owner=worker-b  
+t+08s        lock TTL    4s   transform: in_progress owner=worker-b  
+t+09s        lock TTL    5s   transform: in_progress owner=worker-b  
+t+10s        lock TTL    4s   transform: in_progress owner=worker-b  
+worker-b     committed 'transform'
+worker-b     claimed 'publish' as worker-b:03f9b3 (lease 6s)
+t+11s        lock TTL  gone   transform: completed   owner=worker-b  <- worker-b took over
+worker-b     committed 'publish'
+orchestrator RESUME worker-a (SIGCONT): it wakes up believing it still owns 'transform'
+worker-a     commit of 'transform' REFUSED - worker-a:0dcdd1 no longer owns the lease
+
+ledger (XRANGE ledgers:<workflow>)
+  1789991312354-0    dag_published                   
+  1789991313413-0    step_claimed         fetch      worker-a:b6bf40
+  1789991314430-0    step_completed       fetch      worker-a:b6bf40
+  1789991314956-0    step_claimed         transform  worker-a:0dcdd1
+  1789991323358-0    step_claim_expired   transform  
+  1789991323365-0    step_claimed         transform  worker-b:1e84dc
+  1789991327374-0    step_completed       transform  worker-b:1e84dc
+  1789991327897-0    step_claimed         publish    worker-b:03f9b3
+  1789991328914-0    step_completed       publish    worker-b:03f9b3
+
+transform completed by: worker-b   (claim worker-b:1e84dc)
+
+inspect: redis-cli --scan --pattern '*:demo-lease-1789991312*'   |   redis-cli XRANGE ledgers:demo-lease-1789991312 - +

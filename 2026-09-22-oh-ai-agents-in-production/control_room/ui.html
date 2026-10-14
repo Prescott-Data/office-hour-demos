@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Production control room</title>
+<style>
+:root{--bg:#171412;--panel:#2a2622;--panel2:#1e1b18;--line:#433b34;--accent:#e0a458;--text:#f1e9dc;--dim:#c2b6a3;--faint:#9a8f7f;--red:#e8705a;--ok:#9bbf8a;
+--sans:'Helvetica Neue',Helvetica,Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:15px}
+.wrap{max-width:1500px;margin:0 auto;padding:18px 22px 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+h1{font-size:26px;margin:0;font-weight:800;letter-spacing:-.01em} h1 small{font-family:var(--mono);font-size:12px;color:var(--faint);font-weight:400;margin-left:10px;letter-spacing:.1em}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;color:var(--dim)}
+.chip.run{border-color:var(--ok);color:var(--ok)} .chip.frozen{border-color:var(--red);color:var(--red)} .chip.stopped{color:var(--faint)}
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:16px}
+.bar .sep{width:1px;height:26px;background:var(--line);margin:0 4px}
+button{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:9px 14px;font:600 14px var(--sans);cursor:pointer}
+button:hover{border-color:var(--accent)} button.p{background:var(--accent);color:#1e1b18;border-color:var(--accent)}
+button.warn{border-color:var(--red);color:var(--red)} button.on{background:var(--red);color:#1e1b18;border-color:var(--red)}
+button.tog.on2{background:var(--accent);color:#1e1b18;border-color:var(--accent)} button:disabled{opacity:.4;cursor:default}
+.lbl{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin:0 0 8px}
+.wf{margin-bottom:18px} .wfhead{display:flex;gap:10px;align-items:baseline;margin-bottom:8px;font-family:var(--mono);font-size:12px;color:var(--faint)} .wfhead b{color:var(--accent);font-size:13px}
+.pipe{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.step{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 12px 10px;min-height:118px;position:relative}
+.step h3{margin:0 0 6px;font-size:15px}.step p{margin:0;font-size:12px;color:var(--dim);line-height:1.35;min-height:32px}
+.pill{display:inline-block;margin-bottom:8px;font-family:var(--mono);font-size:10px;letter-spacing:.08em;border-radius:999px;padding:2px 8px;border:1px solid var(--line);color:var(--faint)}
+.step.in_progress{border-color:var(--accent)} .step.in_progress .pill{color:var(--accent);border-color:var(--accent)}
+.step.completed{border-color:#4f6b45} .step.completed .pill{color:var(--ok);border-color:#4f6b45}
+.by{font-family:var(--mono);font-size:11px;color:var(--accent);margin-top:6px;min-height:14px}
+.lease{height:5px;border-radius:3px;background:var(--panel2);margin-top:6px;overflow:hidden}.lease i{display:block;height:100%;background:var(--accent);transition:width .4s linear}
+.lease.low i{background:var(--red)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.card h2{font-size:15px;margin:0 0 10px;color:var(--accent)} .card h2 span{font-family:var(--mono);font-size:11px;color:var(--faint);margin-left:8px;font-weight:400}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px} .row:last-child{border:0}
+.mono{font-family:var(--mono);font-size:12px;color:var(--dim);word-break:break-all} .ok{color:var(--ok)} .bad{color:var(--red)} .dim{color:var(--dim)}
+.led{font-family:var(--mono);font-size:12px;line-height:1.7;max-height:260px;overflow:auto} .led div{display:flex;gap:10px}.led .ev{width:150px;color:var(--text)}.led .st{width:110px;color:var(--accent)}.led .who{color:var(--faint)}
+.led .exp{color:var(--red)} .empty{color:var(--faint);font-size:13px}
+.mem{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mem>div{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.toast{position:fixed;right:20px;bottom:20px;background:var(--panel);border:1px solid var(--accent);border-radius:10px;padding:10px 16px;font-size:14px;max-width:460px;display:none}
+.guide{background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.gtop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.gdots{display:flex;gap:6px}.gdots i{width:9px;height:9px;border-radius:50%;background:var(--line);display:block}.gdots i.done{background:var(--ok)}.gdots i.now{background:var(--accent)}
+.gwhat{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.gtitle{font-size:17px;font-weight:800;margin:2px 0 4px}.gtitle b{color:var(--accent)}
+.ghint{font-size:14px;color:var(--dim);line-height:1.4}
+.donebadge{font-family:var(--mono);font-size:12px;color:var(--ok);border:1px solid #4f6b45;border-radius:999px;padding:4px 12px}
+.grp{margin-bottom:10px}.grplbl{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+.grprow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button.suggest{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.tenanttag{font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--line);border-radius:6px;padding:1px 6px;margin-left:6px}
+</style></head><body><div class="wrap">
+<header><h1>Production control room<small>REAL MESH WORKERS · REDIS · LOCAL FAKE PROVIDERS</small></h1><div class="chips" id="workers"></div></header>
+
+<div class="guide" id="guide"></div>
+
+<div class="bar">
+  <div class="grp" style="width:100%">
+    <div class="grprow">
+      <span class="grplbl" style="margin:0 4px 0 0">1 · Start a request, for a tenant</span>
+      <button class="p" id="runAcme" onclick="run('acme')">Run request <span class="tenanttag">tenant: acme</span></button>
+      <button class="p" id="runGlobex" onclick="run('globex')">Run request <span class="tenanttag">tenant: globex</span></button>
+    </div>
+  </div>
+  <div class="grp" style="width:100%">
+    <div class="grprow">
+      <span class="grplbl" style="margin:0 4px 0 0">2 · Once it's running, try what production does</span>
+      <button id="probeBtn" onclick="probeGo()">Try a disallowed host</button>
+      <button class="warn" id="freezeBtn" onclick="freezeGo()">Simulate: worker lost</button>
+      <button class="tog" id="provBtn" onclick="toggleProvider()">Simulate: provider at capacity</button>
+    </div>
+  </div>
+  <span class="sep"></span>
+  <button class="tog" id="llmBtn" onclick="toggleLLM()">Live model: off</button>
+  <span class="sep"></span>
+  <button onclick="post('/api/reset').then(()=>{flags={}; render();})">Reset</button>
+</div>
+
+<div id="pipes"></div>
+
+<div class="grid">
+  <div>
+    <div class="card"><h2>Workers <span>slide 12 · leases and fencing</span></h2><div id="wlog"></div></div>
+    <div class="card"><h2>Human approval <span>slide 9 · irreversible actions</span></h2><div id="approvals"></div></div>
+    <div class="card"><h2>Credential broker <span>slide 11 · one door</span></h2><div id="broker"></div></div>
+    <div class="card"><h2>Model layer <span>slide 22 · fallback</span></h2><div id="model"></div></div>
+  </div>
+  <div>
+    <div class="card"><h2>Ledger <span>slide 12 · append-only audit trail</span></h2><div class="led" id="ledger"></div></div>
+    <div class="card"><h2>Tenant memory <span>slide 10 · isolation in the key shape</span></h2><div class="mem" id="memory"></div></div>
+  </div>
+</div>
+</div><div class="toast" id="toast"></div>
+
+<script>
+let S = null, toastT, flags = {};
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function toast(m){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(toastT); toastT=setTimeout(()=>t.style.display='none',4200); }
+async function post(path){ const r=await fetch(path,{method:'POST'}); const j=await r.json().catch(()=>({})); if(!r.ok) toast(j.detail||'Request failed'); else if(path==='/api/freeze') toast('Stalled '+j.frozen+' while it holds "'+j.step+'"'); return j; }
+const run = (t) => post('/api/run/'+t);
+async function toggleProvider(){ const turningOn = S.provider_mode!=='capacity'; await post('/api/provider/'+(turningOn?'capacity':'healthy')); if(!turningOn) flags.capacity=true; }
+async function toggleLLM(){ await post('/api/llm/'+(S.llm_mode==='live'?'fake':'live')); }
+async function probeGo(){ const j=await post('/api/probe-host'); window.probeResult=j; flags.probe=true; render(); }
+async function freezeGo(){ await post('/api/freeze'); }
+async function resumeGo(name){ await post('/api/resume/'+name); flags.resume=true; render(); }
+async function approveGo(wf){ await post('/api/approve/'+wf); flags.approve=true; render(); }
+const dig = (o) => { while (o && typeof o==='object' && 'output' in o) o=o.output; return o; };
+
+// -------------------------------------------------------------- guided steps
+function computeGuide(){
+  const w0 = S.workflows[S.workflows.length-1];
+  const fcDone = w0 && w0.steps.find(s=>s.id==='fetch_config'&&s.status==='completed');
+  const bothMem = S.memory.acme && S.memory.globex && Object.keys(S.memory.acme.data).length && Object.keys(S.memory.globex.data).length;
+  const steps = [
+    { id:'req', label:'Start a request', done: S.workflows.length>0,
+      hint:'Click <b>Run request · tenant: acme</b> (or globex) above. acme and globex are just the two fake tenant names in this demo — same steps, separate memory.' },
+    { id:'watch', label:'Watch it move', done: w0 && w0.ledger.length>0,
+      hint:'No click needed — watch the lease bar count down on each step, and the <b>Ledger</b> card fill in on the right.' },
+    { id:'tool', label:'Tool access', done: !!fcDone,
+      hint:'Once <b>fetch_config</b> finishes, look at the <b>Credential broker</b> card: the agent holds a handle, never a token.' },
+    { id:'approve', label:'Human approval', done: !!flags.approve,
+      hint:'When the <b>Human approval</b> card lights up, click <b>Approve</b> there. It is an irreversible step, so it waits for a person.' },
+    { id:'probe', label:'Try a disallowed host', done: !!flags.probe,
+      hint:'Click <b>Try a disallowed host</b> above. The broker should refuse it and show why in the Credential broker card.' },
+    { id:'mem', label:'Compare tenants', done: !!bothMem,
+      hint:'Run the <b>other tenant</b> too. The <b>Tenant memory</b> card will show acme and globex as two separate keys.' },
+    { id:'lost', label:'Worker lost', done: !!flags.resume,
+      hint:'While a step is in progress, click <b>Simulate: worker lost</b>, approve if it is waiting, then click <b>Resume</b> on the frozen worker chip up top.' },
+    { id:'cap', label:'Provider at capacity', done: !!flags.capacity,
+      hint:'Click <b>Simulate: provider at capacity</b>, run a request, then click it again once the fallback has answered in the <b>Model layer</b> card.' },
+  ];
+  return steps;
+}
+function renderGuide(){
+  const steps = computeGuide();
+  const cur = steps.findIndex(s=>!s.done);
+  const dots = steps.map((s,i)=>`<i class="${s.done?'done':(i===cur?'now':'')}"></i>`).join('');
+  const html = cur===-1
+    ? `<div class="gtop"><span class="gwhat">Guide</span><span class="donebadge">All 7 covered ✓</span></div><div class="gtitle">Nice — you've shown all seven. Free to run anything again, or hit Reset before the real thing.</div>`
+    : `<div class="gtop"><span class="gwhat">Step ${cur+1} of ${steps.length}</span><div class="gdots">${dots}</div></div><div class="gtitle">${esc(steps[cur].label)}</div><div class="ghint">${steps[cur].hint}</div>`;
+  $('guide').innerHTML = html;
+  ['runAcme','runGlobex','probeBtn','freezeBtn','provBtn'].forEach(id=>$(id).classList.remove('suggest'));
+  if (cur===0){ $('runAcme').classList.add('suggest'); $('runGlobex').classList.add('suggest'); }
+  else if (cur===4) $('probeBtn').classList.add('suggest');
+  else if (cur===6) $('freezeBtn').classList.add('suggest');
+  else if (cur===7) $('provBtn').classList.add('suggest');
+}
+
+function render(){
+  if(!S) return;
+  renderGuide();
+  $('workers').innerHTML = S.workers.map(w=>`<span class="chip ${w.state==='running'?'run':w.state}">${w.name} · ${w.state}</span>${w.state==='frozen'?`<button class="p" onclick="resumeGo('${w.name}')">Resume ${w.name}</button>`:''}`).join('');
+  const pb=$('provBtn'); pb.classList.toggle('on', S.provider_mode==='capacity'); pb.textContent = S.provider_mode==='capacity' ? 'Provider at capacity: ON (click to heal)' : 'Simulate: provider at capacity';
+  const lb=$('llmBtn'); lb.classList.toggle('on2', S.llm_mode==='live'); lb.textContent='Live model: '+(S.llm_mode==='live'?'on':'off'); lb.disabled=!S.live_available;
+
+  $('pipes').innerHTML = S.workflows.length ? S.workflows.slice().reverse().map((w,i)=>`
+    <div class="wf"><div class="wfhead"><span class="tenanttag">tenant</span> <b>${esc(w.tenant)}</b><span>${esc(w.wf)}</span>${w.budget?`<span>· model calls: ${esc(w.budget.call_count)} · tokens: ${esc(w.budget.used_tokens)} · cost: $${esc(w.budget.cost_usd)}</span>`:''}</div>
+    <div class="pipe">${w.steps.map(s=>`<div class="step ${s.status}"><span class="pill">${s.status.replace('_',' ')}</span><h3>${s.id}</h3><p>${esc(s.desc)}</p>
+      <div class="by">${s.by?esc(s.by):''}</div>${s.ttl!=null?`<div class="lease ${s.ttl<=2?'low':''}"><i style="width:${Math.min(100,s.ttl/5*100)}%"></i></div>`:''}</div>`).join('')}</div></div>`).join('')
+    : '<div class="empty" style="margin:20px 0">No request yet. Run one above.</div>';
+
+  $('wlog').innerHTML = S.workers.map(w=>`<div class="row" style="align-items:flex-start"><span class="chip ${w.state==='running'?'run':w.state}">${w.name} · ${w.state}</span><span class="mono" style="text-align:right;flex:1">${(w.log||[]).slice(-3).map(l=>`<div class="${l.includes('Rejected stale')?'bad':''}">${esc(l.replace(/^\[DistributedWorker\] /,'').slice(0,90))}</div>`).join('')}</span></div>`).join('');
+  $('approvals').innerHTML = S.pending.length ? S.pending.map(p=>`<div class="row"><span>${esc(p.title)}<div class="mono">${esc(p.wf)}</div></span><button class="p" onclick="approveGo('${p.wf}')">Approve</button></div>`).join('') : '<div class="empty">Nothing waiting for a human.</div>';
+
+  const w0 = S.workflows[S.workflows.length-1], fc = w0 && dig(w0.steps.find(s=>s.id==='fetch_config')?.output);
+  let bro = fc ? `<div class="row"><span>Agent holds</span><span class="mono">${esc(fc.connection_id)}</span></div><div class="row"><span>Provider call</span><span class="${fc.authenticated?'ok':'bad'}">HTTP ${esc(fc.http)} · authenticated: ${esc(fc.authenticated)}</span></div><div class="row"><span>Token in agent output</span><span class="ok">none</span></div>` : '<div class="empty">Runs when a request reaches fetch_config.</div>';
+  if (window.probeResult) bro += `<div class="row"><span>Off-allowlist host</span><span class="${window.probeResult.blocked?'ok':'bad'}">${window.probeResult.blocked?'BLOCKED · '+esc(window.probeResult.error):'went out'}</span></div>${window.probeResult.blocked?`<div class="mono">${esc(window.probeResult.message)}</div>`:''}`;
+  $('broker').innerHTML = bro;
+
+  const sm = w0 && dig(w0.steps.find(s=>s.id==='summarize')?.output);
+  $('model').innerHTML = `<div class="row"><span>Primary provider</span><span class="${S.provider_mode==='capacity'?'bad':'ok'}">${S.provider_mode==='capacity'?'429 · retry after 3600s':'healthy'}</span></div>` +
+    (sm ? `<div class="row"><span>Answered by</span><span class="mono">${esc(sm.provider)} · ${esc(sm.mode)} · ${esc(sm.elapsed_s)}s</span></div><div class="mono" style="padding:6px 0">${esc(sm.answer)}</div>` : '<div class="empty">Runs at the last step.</div>');
+
+  const led = w0 ? w0.ledger : [];
+  $('ledger').innerHTML = led.length ? led.map(e=>`<div><span class="ev ${e.event==='step_claim_expired'?'exp':''}">${esc(e.event)}</span><span class="st">${esc(e.step||'')}</span><span class="who">${esc(e.who)}</span></div>`).join('') : '<div class="empty">Empty.</div>';
+
+  $('memory').innerHTML = Object.entries(S.memory).map(([t,m])=>`<div><div class="lbl">${esc(t)}</div><div class="mono">${esc(m.key)}</div>${Object.keys(m.data).length?Object.entries(m.data).map(([k,v])=>`<div class="mono"><span class="dim">${esc(k)}:</span> ${esc(String(v).slice(0,70))}</div>`).join(''):'<div class="empty">empty</div>'}</div>`).join('');
+}
+async function tick(){ try{ S = await (await fetch('/api/state')).json(); render(); }catch(e){} setTimeout(tick, 500); }
+tick();
+</script></body></html>

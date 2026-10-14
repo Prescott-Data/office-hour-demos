@@ -20,6 +20,7 @@ so you can clone the repo and open any one of them without reading the others.
 | **OH** | [**Building a GitHub Code Review Squad**](2026-08-27-oh-github-code-review-squad/) · 27 August 2026 | Three agents that write code, push it, review it, remember what they found, and email the report. Every call goes through Nexus; no agent holds a token | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Nexus, GitHub, Gmail |
 | **EP 02** | [**Agents That Learn From Their Mistakes**](ep02-garage-service-desk/) · 3 September 2026 | A garage service desk. The agent briefs a mechanic on a vehicle's history, gets corrected once, and every brief after that is shaped differently | [JarvisCore](https://jarviscore.developers.prescottdata.io/), [Athena](https://athena.developers.prescottdata.io/), FastAPI |
 | **EP 03** | [**Give Your AI Agent a Compass**](ep03-odin-evidence-compass/) · 17 September 2026 | A claims investigator chooses what to inspect while Odin navigates and ranks the connected evidence | [Odin](https://github.com/Prescott-Data/odin), FastAPI, React |
+| **OH** | [**AI Agents in Production**](2026-09-22-oh-ai-agents-in-production/) · 22 September 2026 | A technical session on running agents on Kubernetes, with slides and a live control room: leases, a credential broker, a human gate, and failover | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Redis, FastAPI |
 
 ---
 
