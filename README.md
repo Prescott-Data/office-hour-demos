@@ -21,6 +21,7 @@ so you can clone the repo and open any one of them without reading the others.
 | **EP 02** | [**Agents That Learn From Their Mistakes**](ep02-garage-service-desk/) · 3 September 2026 | A garage service desk. The agent briefs a mechanic on a vehicle's history, gets corrected once, and every brief after that is shaped differently | [JarvisCore](https://jarviscore.developers.prescottdata.io/), [Athena](https://athena.developers.prescottdata.io/), FastAPI |
 | **EP 03** | [**Give Your AI Agent a Compass**](ep03-odin-evidence-compass/) · 17 September 2026 | A claims investigator chooses what to inspect while Odin navigates and ranks the connected evidence | [Odin](https://github.com/Prescott-Data/odin), FastAPI, React |
 | **OH** | [**AI Agents in Production**](2026-09-22-oh-ai-agents-in-production/) · 22 September 2026 | A technical session on running agents on Kubernetes, with slides and a live control room: leases, a credential broker, a human gate, and failover | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Redis, FastAPI |
+| **SPOTLIGHT** | [**JarvisCore for Personal Finance**](community-spotlight/personal-finance/) · 8 October 2026 | A private money desk. A locked statement goes in, five agents propose categories, flag what departs from a place's own pattern, and separate cost from waste. Counterparty names are replaced with labels before anything leaves the machine | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Jev, FastAPI |
 
 ---
 
@@ -48,6 +49,11 @@ One folder per session, named `epNN-short-description`, or `YYYY-MM-DD-oh-short-
 when the session has no episode number, with the code as it stood when the session ended.
 Tidying for readability is fine. Rewriting it into something that was not shown live is not,
 because the value of this repo is that it matches the recording.
+
+**Community spotlights are the exception**, and they live under `community-spotlight/`. A
+spotlight is something one of us built and demoed rather than a session taught from a script, so
+its folder keeps growing after the demo instead of being frozen at it. The table marks these
+**SPOTLIGHT**. Everything below still applies in full.
 
 Every episode folder carries:
 
@@ -77,4 +83,11 @@ Add a row to the table above in the same commit.
 | **JarvisCore**, the agent framework | https://jarviscore.developers.prescottdata.io/ | https://github.com/Prescott-Data/jarviscore-framework |
 | **Odin**, the graph navigation engine | https://odin.developers.prescottdata.io/ | https://github.com/Prescott-Data/Odin-1 |
 
-**Join Office Hours on Discord:** https://discord.gg/CUb2FbasA
+**Join Office Hours on Discord:** https://discord.gg/QxzpRZ6VaD
+
+---
+
+## Licence
+
+Apache 2.0, the same licence as JarvisCore and Athena. See [LICENSE](LICENSE). Use this code,
+change it, ship it, including commercially. Keep the notice and say what you changed.
