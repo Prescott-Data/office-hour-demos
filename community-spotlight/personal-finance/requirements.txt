@@ -1,0 +1,17 @@
+# runtime
+jarviscore-framework[redis]==2.1.0
+pdfplumber==0.11.10
+typesafe-sdk==0.7.0
+pyyaml==6.0.3
+pydantic==2.13.5
+python-dotenv==1.2.3
+truststore==0.10.4
+fastapi==0.141.1
+uvicorn==0.53.0
+python-multipart==0.0.32
+
+# development
+pytest==9.1.1
+pytest-asyncio==1.4.0
+ruff==0.16.8
+httpx==0.28.1

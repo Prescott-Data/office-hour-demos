@@ -1,0 +1,20 @@
+# real statements live here and never leave the machine
+private/
+
+# runtime output
+.pf-state/
+logs/
+runtime/
+
+# written at runtime by the framework
+blob_storage/
+traces/
+logs/
+
+# local demo notes, which quote a real statement
+DEMO.md
+
+# editable install and framework scratch
+*.egg-info/
+output/
+hitl_inbox/
