@@ -1,0 +1,32 @@
+name: Personal Finance Desk
+factory: personal_finance.team:build_mesh
+mesh_handler: personal_finance.team:submit_task
+blueprint: personal-finance
+mesh_id: pf-mesh
+working_dir: ./runtime
+agents:
+  categoriser:
+    id: pf-categoriser
+    name: Categoriser
+    color: "#397b72"
+    shape: circle
+  proposer:
+    id: pf-proposer
+    name: Proposer
+    color: "#8a6d3b"
+    shape: rounded
+  watchdog:
+    id: pf-watchdog
+    name: Watchdog
+    color: "#b5651d"
+    shape: hexagon
+  coach:
+    id: pf-coach
+    name: Coach
+    color: "#4a5aa8"
+    shape: circle
+  auditor:
+    id: pf-auditor
+    name: Auditor
+    color: "#6f675d"
+    shape: diamond

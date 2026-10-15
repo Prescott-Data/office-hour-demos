@@ -1,0 +1,45 @@
+name: mpesa-statement
+row_start: "^[A-Z0-9]{10}$"
+timestamp_format: "%Y-%m-%d %H:%M:%S"
+owner_label: "Customer Name"
+paid_in: paid_in
+withdrawn: withdrawn
+balance: balance
+columns:
+  - {name: reference, heading: "Receipt No.", kind: text}
+  - {name: timestamp, heading: "Completion Time", kind: timestamp}
+  - {name: description, heading: "Details", kind: text}
+  - {name: status, heading: "Transaction Status", kind: text}
+  - {name: paid_in, heading: "Paid In", kind: amount}
+  - {name: withdrawn, heading: "Withdrawn", kind: amount}
+  - {name: balance, heading: "Balance", kind: amount}
+status_values: [Completed, Failed, Reversed, Pending]
+# the issuer's own wording for what a row is, mapped onto shared names
+kinds:
+  "airtime purchase": airtime
+  "customer bundle purchase": data
+  "customer transfer of funds charge": charge
+  "pay bill charge": charge
+  "withdrawal charge": charge
+  "customer withdrawal at": withdrawal
+  "recharge for customer": airtime
+  "customer send money": send_money
+  "overdraft of credit party": overdraft
+  "od loan repayment": overdraft_repayment
+  "customer transfer": send_money
+  "customer payment": send_money
+  "merchant payment": merchant
+  "pay bill": paybill
+  "business payment": received
+  "funds received": received
+  "transfer from": received
+  "agent withdrawal": withdrawal
+  "agent deposit": deposit
+end_lines:
+  - "^Disclaimer"
+  - "^Statement Verification Code"
+  - "^For self-help"
+skip_lines:
+  - "^Page \\d+ of \\d+$"
+  - "^Disclaimer"
+  - "safaricom"

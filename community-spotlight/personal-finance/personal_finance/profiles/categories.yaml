@@ -1,0 +1,34 @@
+# Your categories, in your words. What you write here is what the categoriser judges against,
+# so sharpening a description is how you steer it. Edit freely.
+categories:
+  airtime_and_data: Phone credit, data bundles and anything bought from a mobile network.
+  bank_transfer: Money moved between your own accounts, wallets, agents or a bank.
+  bills_and_utilities: Rent, power, water, internet, subscriptions and recurring household bills.
+  eating_out: Restaurants, cafes, bars, takeaways and food delivery.
+  education: School fees, courses, books and training.
+  entertainment: Leisure, events, streaming, sport and hobbies.
+  fees_and_charges: Transaction fees and service charges taken by the provider.
+  friends_and_family: Money given to or shared with people you are close to.
+  groceries: Supermarkets, food markets, butchers and household food shopping.
+  health: Chemists, clinics, hospitals, insurance and medical costs.
+  household: Furniture, repairs, cleaning, domestic help and things for the home.
+  income: Money received as salary, business takings, refunds or gifts to you.
+  loan_and_overdraft: Borrowing and repaying, including overdraft facilities.
+  personal_transfer: Money sent to or received from another person.
+  savings: Money deliberately set aside, locked or invested.
+  shopping: Clothes, electronics, general retail and online orders.
+  transport: Fuel, taxis, matatus, fares, parking and vehicle costs.
+  uncategorised: Nothing above fits, or there is not enough to tell.
+
+# A kind appears here only when the statement names it outright, never when it must be inferred.
+by_kind:
+  airtime: airtime_and_data
+  data: airtime_and_data
+  charge: fees_and_charges
+  overdraft: loan_and_overdraft
+  overdraft_repayment: loan_and_overdraft
+  deposit: bank_transfer
+  withdrawal: bank_transfer
+
+# Below this confidence the categoriser asks you instead of deciding.
+confidence_threshold: 0.6

@@ -1,0 +1,418 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Personal Finance Desk</title>
+<style>
+  :root {
+    --ink: #15181d; --muted: #6b7280; --line: #e3e6ea; --ground: #f6f7f9;
+    --panel: #ffffff; --good: #1f7a5a; --warn: #b5651d; --accent: #2f4f8f;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.5 system-ui, sans-serif; color: var(--ink); background: var(--ground); }
+  header { padding: 14px 20px; background: var(--panel); border-bottom: 1px solid var(--line);
+           display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+  h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+  .muted { color: var(--muted); }
+  main { display: grid; grid-template-columns: 340px 1fr 320px; gap: 16px; padding: 16px;
+         align-items: start; }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .panel h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em;
+              color: var(--muted); margin: 0 0 10px; }
+  input[type=password], input[type=file], select { width: 100%; padding: 8px; border: 1px solid var(--line);
+    border-radius: 7px; background: #fff; font: inherit; }
+  button { padding: 8px 14px; border: 0; border-radius: 7px; background: var(--ink); color: #fff;
+           font: inherit; cursor: pointer; }
+  button:disabled { opacity: .45; cursor: default; }
+  button.ghost { background: #eef0f3; color: var(--ink); }
+  label { display: block; margin: 8px 0 4px; font-size: 12px; color: var(--muted); }
+  .cat { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+  .cat > summary { padding: 9px 12px; cursor: pointer; display: flex; justify-content: space-between;
+                   gap: 10px; background: #fbfcfd; }
+  .cat[open] > summary { border-bottom: 1px solid var(--line); }
+  .cat .meaning { font-size: 12px; color: var(--muted); padding: 8px 12px 0; }
+  .tx { display: grid; grid-template-columns: 22px 82px 1fr 100px 150px; gap: 8px; padding: 6px 12px;
+        border-top: 1px solid #f1f3f5; align-items: center; }
+  .tx:first-of-type { border-top: 0; }
+  .amt { text-align: right; font-variant-numeric: tabular-nums; }
+  .out { color: var(--ink); } .in { color: var(--good); }
+  .desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pill { font-size: 11px; padding: 1px 7px; border-radius: 999px; background: #eef0f3; color: var(--muted); }
+  .pill.fixed { background: #e6f2ee; color: var(--good); }
+  .step { padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .step:last-child { border-bottom: 0; }
+  .finding { padding: 8px 0; border-bottom: 1px solid #f1f3f5; }
+  .finding b { color: var(--warn); font-weight: 600; }
+  .summary p { margin: 0 0 10px; }
+  .err { color: #a3222b; }
+  .bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 8px 0 12px; }
+  .bar input[type=text] { flex: 1; min-width: 120px; padding: 7px; border: 1px solid var(--line);
+    border-radius: 7px; font: inherit; }
+  .stale { background: #fdf3e7; border: 1px solid #f0d9bb; color: var(--warn); padding: 7px 10px;
+    border-radius: 7px; margin-bottom: 10px; font-size: 13px; }
+  details.tools > summary { cursor: pointer; color: var(--muted); font-size: 12px; padding: 4px 0; }
+  .big { font-size: 20px; font-weight: 600; }
+  .line { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: start;
+    padding: 8px 0; border-bottom: 1px solid #f1f3f5; }
+  .line:last-child { border-bottom: 0; }
+  .line .amt { font-variant-numeric: tabular-nums; }
+  .toggle { border: 1px solid var(--line); background: #fff; border-radius: 999px; padding: 2px 10px;
+    font-size: 12px; cursor: pointer; color: var(--muted); }
+  .toggle.on { background: #fdf3e7; border-color: #f0d9bb; color: var(--warn); font-weight: 600; }
+  .yours { font-size: 11px; color: var(--good); }
+</style>
+
+<header>
+  <h1>Personal Finance Desk</h1>
+  <span class="muted" id="where">nothing loaded</span>
+  <span class="muted" id="agents">agents starting…</span>
+  <span class="muted" style="margin-left:auto" id="cost"></span>
+</header>
+
+<main>
+  <section>
+    <div class="panel">
+      <h2>1 · Your statement</h2>
+      <form id="up">
+        <label for="f">PDF, locked or not. It is read here and not kept.</label>
+        <input id="f" type="file" name="statement" accept="application/pdf" required>
+        <label for="p">Password, if it has one</label>
+        <input id="p" type="password" name="password" autocomplete="off">
+        <p><button id="read">Read it</button></p>
+      </form>
+      <div id="readout" class="muted"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h2>2 · Sort it</h2>
+      <p class="muted" style="margin-top:0">Places every counterparty in one of your categories.
+        Nothing is judged yet, so you can tidy first.</p>
+      <button id="run" disabled>Categorise</button>
+      <div id="waiting" class="muted" style="margin-top:8px" hidden>
+        The first press takes about two minutes while the agents start, because each one loads
+        the framework's function catalogue. Every press after that is immediate.
+      </div>
+      <div id="steps" style="margin-top:10px"></div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h2>3 · When the categories look right</h2>
+      <p class="muted" style="margin-top:0">Then it looks for what deserves attention and writes
+        the summary.</p>
+      <button id="analyse" class="ghost" disabled>Happy with categories</button>
+      <div id="steps2" style="margin-top:10px"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Your categories <span class="muted" id="count"></span></h2>
+    <p class="muted" style="margin-top:0">Moving a transaction moves every payment to that same
+      place, past and future. Tick several to move them together.</p>
+
+    <div class="bar" id="bulk" hidden>
+      <b id="picked">0 selected</b>
+      <select id="bulkTo"></select>
+      <button id="bulkGo">Move them</button>
+      <button id="bulkClear" class="ghost">Clear</button>
+    </div>
+
+    <details class="tools" open>
+      <summary>Add or merge categories</summary>
+      <div class="bar">
+        <input id="newName" type="text" placeholder="new category name">
+        <input id="newMeaning" type="text" placeholder="what belongs in it">
+        <button id="addCat" class="ghost">Add</button>
+      </div>
+      <div class="bar">
+        <select id="mergeFrom"></select>
+        <span class="muted">into</span>
+        <select id="mergeTo"></select>
+        <button id="mergeGo" class="ghost">Merge</button>
+      </div>
+      <div id="toolsay" class="muted"></div>
+    </details>
+
+    <div id="said" class="muted" style="padding:4px 0 8px"></div>
+    <div id="cats"></div>
+  </section>
+
+  <section>
+    <div class="panel">
+      <h2>Worth your attention</h2>
+      <div id="findings" class="muted">Run the desk to see this.</div>
+    </div>
+    <div class="panel" style="margin-top:16px">
+      <h2>Where the money went</h2>
+      <div id="summary" class="summary muted">Run the desk to see this.</div>
+    </div>
+
+    <div class="panel" style="margin-top:16px">
+      <h2>What it cost that need not have</h2>
+      <div id="auditTop" class="muted">Not worked out yet.</div>
+      <div class="bar">
+        <button id="auditGo" class="ghost">Work it out</button>
+        <button id="auditFresh" class="ghost" hidden>Work it out again</button>
+      </div>
+      <div id="auditLines"></div>
+      <div id="auditCaveat" class="muted" style="margin-top:8px"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+
+async function watchAgents() {
+  const state = await (await fetch("/api/ready")).json();
+  if (state.ready) { $("agents").textContent = "agents ready"; $("waiting").hidden = true; }
+  else if (state.failed) { $("agents").innerHTML = `<span class="err">${state.failed}</span>`; }
+  else { $("agents").textContent = "agents start on first use"; }
+}
+watchAgents();
+let NAMES = [];
+const PICKED = new Set();
+
+$("up").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const body = new FormData();
+  body.append("statement", $("f").files[0]);
+  body.append("password", $("p").value);
+  $("read").disabled = true;
+  $("readout").textContent = "reading…";
+  const res = await fetch("/api/statement", { method: "POST", body });
+  const data = await res.json();
+  $("read").disabled = false;
+  $("p").value = "";
+  if (data.error) { $("readout").innerHTML = `<span class="err">${data.error}</span>`; return; }
+  $("readout").innerHTML = `${data.transactions} transactions · ` +
+    (data.reconciles
+      ? `<b style="color:var(--good)">${data.verdict}</b>`
+      : `<b class="err">${data.breaks} of ${data.checked} do not reconcile</b>`);
+  $("where").textContent = data.transactions + " transactions loaded";
+  $("run").disabled = false;
+  await categories();
+  await showAudit(await (await fetch("/api/audit")).json());
+});
+
+async function categories() {
+  const open = new Set([...document.querySelectorAll("details.cat[open]")]
+    .map(node => node.dataset.name));
+  const data = await (await fetch("/api/categories")).json();
+  NAMES = data.names;
+  $("count").textContent = data.categories.length ? `· ${data.categories.length}` : "";
+  for (const id of ["bulkTo", "mergeFrom", "mergeTo"]) {
+    $(id).innerHTML = NAMES.map(name => `<option>${name}</option>`).join("");
+  }
+  showPicked();
+  $("cats").innerHTML = data.categories.map(category => `
+    <details class="cat" data-name="${category.name}"
+      ${open.has(category.name) || (!open.size && category.name === "uncategorised") ? "open" : ""}>
+      <summary>
+        <span><b>${category.name.replace(/_/g, " ")}</b>
+          <span class="pill">${category.transactions.length}</span></span>
+        <span class="amt muted">${category.spent}</span>
+      </summary>
+      ${category.meaning ? `<div class="meaning">${category.meaning}</div>` : ""}
+      ${category.transactions.map(tx => `
+        <div class="tx">
+          <input type="checkbox" data-key="${tx.key}" ${PICKED.has(tx.key) ? "checked" : ""}
+                 onchange="pick(this)" title="select to move several at once">
+          <span class="muted">${tx.when}</span>
+          <span class="desc" title="${tx.description}">${tx.description}
+            ${tx.corrected ? '<span class="pill fixed">yours</span>' : ""}</span>
+          <span class="amt ${tx.amount.startsWith("-") ? "out" : "in"}">${tx.amount}</span>
+          <select data-key="${tx.key}" onchange="move(this)">
+            ${NAMES.map(name => `<option ${name === category.name ? "selected" : ""}>${name}</option>`).join("")}
+            <option value="__new__">+ new category…</option>
+          </select>
+        </div>`).join("")}
+    </details>`).join("");
+}
+
+async function move(select) {
+  const key = select.dataset.key;
+  if (select.value === "__new__") {
+    const name = prompt("Name the new category, for example transport");
+    if (!name) { await categories(); return; }
+    const meaning = prompt(`What belongs in ${name}?`) || name;
+    const made = await addCategory(name, meaning);
+    if (!made) { await categories(); return; }
+    await moveKeys([key], made);
+    return;
+  }
+  select.disabled = true;
+  await moveKeys([key], select.value);
+}
+
+async function addCategory(name, meaning) {
+  const res = await fetch("/api/categories/add", {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ name, meaning }),
+  });
+  const data = await res.json();
+  if (data.error) { say(data.error, true); return null; }
+  return data.added;
+}
+
+function say(message, bad) {
+  $("said").innerHTML = bad ? `<span class="err">${message}</span>` : message;
+}
+
+async function moveKeys(keys, category) {
+  const res = await fetch("/api/move", {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ keys, category }),
+  });
+  const data = await res.json();
+  if (data.error) { say(data.error, true); return; }
+  PICKED.clear();
+  await categories();
+  const moved = data.moved.length;
+  say(`moved ${moved} counterpart${moved === 1 ? "y" : "ies"} into ${data.to}, with every payment to them`);
+  await refreshFindings();
+}
+
+function pick(box) {
+  box.checked ? PICKED.add(box.dataset.key) : PICKED.delete(box.dataset.key);
+  showPicked();
+}
+
+function showPicked() {
+  $("bulk").hidden = PICKED.size === 0;
+  $("picked").textContent = `${PICKED.size} selected`;
+}
+
+
+
+$("bulkGo").addEventListener("click", () => moveKeys([...PICKED], $("bulkTo").value));
+$("bulkClear").addEventListener("click", () => { PICKED.clear(); categories(); });
+
+$("addCat").addEventListener("click", async () => {
+  const made = await addCategory($("newName").value, $("newMeaning").value);
+  if (!made) return;
+  $("newName").value = ""; $("newMeaning").value = "";
+  say(`added ${made}`);
+  await categories();
+});
+
+$("mergeGo").addEventListener("click", async () => {
+  const res = await fetch("/api/categories/merge", {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ source: $("mergeFrom").value, target: $("mergeTo").value }),
+  });
+  const data = await res.json();
+  if (data.error) { say(data.error, true); return; }
+  say(`${data.merged} folded into ${data.into}`);
+  await categories();
+  await refreshFindings();
+});
+
+async function showAudit(body) {
+  if (!body.worked_out) {
+    $("auditTop").textContent = body.reason || "Not worked out yet.";
+    $("auditLines").innerHTML = "";
+    $("auditCaveat").textContent = "";
+    $("auditFresh").hidden = true;
+    return;
+  }
+  $("auditFresh").hidden = false;
+  $("auditTop").innerHTML = `<span class="big">${body.avoidable}</span> of ${body.spent} that left` +
+    (body.unruled ? `<div class="muted">${body.unruled} line(s) still the desk's view. Tap one to make it yours.</div>` : "");
+  $("auditLines").innerHTML = body.lines.map(line => `
+    <div class="line">
+      <div>
+        <b>${line.what}</b> <span class="amt muted">${line.amount}</span>
+        ${line.your_call ? '<span class="yours">your call</span>' : ""}
+        <div class="muted">${line.says}</div>
+      </div>
+      <button class="toggle ${line.avoidable ? "on" : ""}"
+        onclick="rule('${line.what.replace(/'/g, "\\'")}', ${!line.avoidable})">
+        ${line.avoidable ? "avoidable" : "cost, not waste"}
+      </button>
+    </div>`).join("");
+  $("auditCaveat").textContent = body.caveat || "";
+}
+
+async function rule(what, avoidable) {
+  const res = await fetch("/api/audit/rule", {
+    method: "POST", headers: { "content-type": "application/json" },
+    body: JSON.stringify({ what, avoidable }),
+  });
+  await showAudit(await res.json());
+}
+
+async function runAudit(fresh) {
+  $("auditGo").disabled = $("auditFresh").disabled = true;
+  $("auditTop").textContent = fresh ? "working it out again…" : "working it out…";
+  const res = await fetch(`/api/audit${fresh ? "?fresh=true" : ""}`, { method: "POST" });
+  const body = await res.json();
+  $("auditGo").disabled = $("auditFresh").disabled = false;
+  if (body.error) { $("auditTop").innerHTML = `<span class="err">${body.error}</span>`; return; }
+  await showAudit(body);
+  if (body.cost && body.cost !== "0.000000") $("cost").textContent = `$${body.cost}`;
+}
+
+$("auditGo").addEventListener("click", () => runAudit(false));
+$("auditFresh").addEventListener("click", () => runAudit(true));
+showAudit({ worked_out: false });
+
+async function refreshFindings() {
+  const data = await (await fetch("/api/findings")).json();
+  if (data.findings.length || data.summary) show(data, data.stale);
+}
+
+async function stage(url, button, into, after) {
+  $(button).disabled = true;
+  $(into).innerHTML = "";
+  const res = await fetch(url, { method: "POST" });
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  while (true) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const chunks = buffer.split("\n\n");
+    buffer = chunks.pop();
+    for (const chunk of chunks) {
+      const kind = (chunk.match(/^event: (.+)$/m) || [])[1];
+      const payload = JSON.parse((chunk.match(/^data: (.+)$/m) || [])[1]);
+      if (kind === "step") {
+        $(into).insertAdjacentHTML("beforeend",
+          `<div class="step">${payload.say}${payload.detail ? ` <span class="muted">${payload.detail}</span>` : ""}</div>`);
+        if (payload.detail && payload.detail.startsWith("$")) $("cost").textContent = payload.detail;
+      }
+      if (kind === "done") await after(payload);
+    }
+  }
+  $(button).disabled = false;
+}
+
+$("run").addEventListener("click", () => {
+  $("waiting").hidden = false;
+  return stage("/api/categorise", "run", "steps", async () => {
+    $("waiting").hidden = true;
+    await watchAgents();
+    await categories();
+    $("analyse").disabled = false;
+  });
+});
+
+$("analyse").addEventListener("click", () =>
+  stage("/api/analyse", "analyse", "steps2", async (payload) => show(payload, false)));
+
+function show(payload, stale) {
+  const warning = stale
+    ? `<div class="stale">Written before your last change. Press Happy with categories again.</div>`
+    : "";
+  $("findings").innerHTML = warning + (payload.findings.length
+    ? payload.findings.map(f => `<div class="finding"><b>${f.kind}</b> ${f.headline}
+        ${f.evidence.filter(Boolean).map(e => `<div class="muted">${e}</div>`).join("")}</div>`).join("")
+    : "nothing stood out");
+  const s = payload.summary;
+  $("summary").innerHTML = warning + (s
+    ? `<p><b>${s.headline || ""}</b></p>${(s.paragraphs || []).map(p => `<p>${p}</p>`).join("")}
+       ${(s.worth_knowing || []).length ? "<p class='muted'>Worth knowing</p><ul>" +
+         s.worth_knowing.map(w => `<li>${w}</li>`).join("") + "</ul>" : ""}`
+    : "nothing written");
+}
+</script>
