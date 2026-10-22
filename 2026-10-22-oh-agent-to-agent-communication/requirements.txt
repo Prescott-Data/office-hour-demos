@@ -1,0 +1,2 @@
+# The framework version this session ran on.
+jarviscore-framework[p2p]==2.1.1
