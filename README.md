@@ -22,6 +22,7 @@ so you can clone the repo and open any one of them without reading the others.
 | **EP 03** | [**Give Your AI Agent a Compass**](ep03-odin-evidence-compass/) · 17 September 2026 | A claims investigator chooses what to inspect while Odin navigates and ranks the connected evidence | [Odin](https://github.com/Prescott-Data/odin), FastAPI, React |
 | **OH** | [**AI Agents in Production**](2026-09-22-oh-ai-agents-in-production/) · 22 September 2026 | A technical session on running agents on Kubernetes, with slides and a live control room: leases, a credential broker, a human gate, and failover | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Redis, FastAPI |
 | **SPOTLIGHT** | [**JarvisCore for Personal Finance**](community-spotlight/personal-finance/) · 8 October 2026 | A private money desk. A locked statement goes in, five agents propose categories, flag what departs from a place's own pattern, and separate cost from waste. Counterparty names are replaced with labels before anything leaves the machine | [JarvisCore](https://jarviscore.developers.prescottdata.io/), Jev, FastAPI |
+| **OH** | [**Agent to Agent Communication**](2026-10-22-oh-agent-to-agent-communication/) · 22 October 2026 | A team of agents that find each other by gossip and talk directly, with no orchestrator. One is killed mid-conversation and the rest keep talking; a new one joins and the others find it | [JarvisCore](https://jarviscore.developers.prescottdata.io/), SWIM, ZeroMQ |
 
 ---
 

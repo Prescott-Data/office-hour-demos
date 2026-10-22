@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Print one piece of the build-along code, straight from the files you're running.
+#   scripts/show agent | listen | ask | config | roster | reply | hello | join
+set -u
+cd "$(dirname "$0")/.."
+block(){ sed -n "/$2/,/^$/p" "$1" | sed '${/^$/d}'; }   # from a start line to the next blank line
+
+case "${1:-}" in
+  agent)  block two_agents.py '^class Analyst' ;;
+  listen) block two_agents.py '    async def listen' ;;
+  ask)    sed -n '/researcher can see/,/^    )/p' two_agents.py ;;
+  config) sed -n '/mesh = Mesh(config={"p2p_enabled": True/,/await mesh.start()/p' mesh_node.py ;;
+  roster) block mesh_node.py '^async def watch_roster' ;;
+  reply)  block mesh_node.py '^async def answer_requests' ;;
+  hello)  block mesh_node.py '^async def say_hello' ;;
+  join)   sed -n '3,6p' mesh_node.py ;;
+  *) echo "usage: scripts/show agent|listen|ask|config|roster|reply|hello|join"; exit 1;;
+esac

@@ -1,0 +1,11 @@
+.env
+
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# written at runtime by the framework
+blob_storage/
+hitl_inbox/
+StepOutputs/
